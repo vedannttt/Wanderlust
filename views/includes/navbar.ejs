@@ -1,0 +1,104 @@
+<style>
+/* Base colors for the links and buttons */
+:root {
+    --a-color: #222222;
+    --brand-color: #fe424d;
+}
+
+/* Base style for all links in the navbar */
+.nav-link {
+    color: var(--a-color) !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: var(--a-color) !important;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+/* Custom styling for the Search Button */
+.search-btn {
+    background-color: var(--brand-color);
+    color: #fff;
+    border-radius: 25px;
+    padding: 0 1rem 0 1rem;
+    height: 38px; /* Standard button height */
+    display: flex; /* Use flex to align icon and text */
+    align-items: center;
+    border: none;
+}
+
+.search-btn:hover {
+    background-color: var(--brand-color);
+    color: #fff;
+    /* Optional: Slight darker shade on hover for feedback */
+    opacity: 0.9;
+}
+
+.search-btn i {
+    display: inline;
+    margin-right: 0.5rem;
+}
+
+/* Styling for the Search Input Field */
+.search-inp {
+    border-radius: 25px;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+    font-size: 0.8rem;
+    /* Remove default border */
+    border: 1px solid #ddd; 
+    /* Adjust width for better fit */
+    width: 250px; 
+}
+</style>
+
+<nav class="navbar navbar-expand-md bg-light border-bottom sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/listings">
+            <i class="fa-regular fa-compass fa-2xl" style="color: var(--brand-color);"></i>
+        </a>
+        
+        <button 
+            class="navbar-toggler" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#navbarNavAltMarkup" 
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            
+            <div class="navbar-nav">
+                <a class="nav-link" href="/listings">Explore</a>
+            </div>
+
+            <div class="navbar-nav mx-auto"> 
+                <form class="d-flex" role="search">
+                    <input 
+                    class="form-control me-2 search-inp" 
+                    type="search" 
+                    placeholder="Search destinations" 
+                    />
+                    <button class="btn search-btn" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                    </button>
+                </form>
+            </div>
+
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/listings/new">Airbnb your home</a>
+                
+                <% if(!currUser) {%>
+                <a class="nav-link" href="/signup"><b>Sign up</b></a>
+                <a class="nav-link" href="/login"><b>Log in</b></a>
+                <% }%> 
+                
+                <% if(currUser) {%>
+                <a class="nav-link" href="/logout">Log out</a>
+                <% }%>
+            </div>
+        </div>
+    </div>
+</nav>

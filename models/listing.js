@@ -30,6 +30,11 @@ const listingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref:"User",
     },
+    category: {
+        type: String,
+        enum: ["Trending", "Rooms", "Iconic", "Mountains", "Castles", "Amazing Pools", "Camping", "Farms", "Arctic", "Domes", "Boats"],
+        default: "Trending",
+    },
     
     // 2. CRITICAL FIX: The geometry schema must match the GeoJSON structure
     geometry: {

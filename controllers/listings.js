@@ -4,10 +4,24 @@ const mapToken = process.env.MAPBOX_TOKEN;
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const geocodingClient = mbxGeocoding({ accessToken: mapToken});
 
-// Index route
+// Index route (with optional search)
 module.exports.index = async (req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
+    const { q } = req.query;
+    let allListings;
+    if (q && q.trim() !== "") {
+        const regex = new RegExp(q.trim(), "i");
+        allListings = await Listing.find({
+            $or: [
+                { title: regex },
+                { location: regex },
+                { country: regex },
+                { category: regex },
+            ]
+        });
+    } else {
+        allListings = await Listing.find({});
+    }
+    res.render("listings/index.ejs", { allListings, searchQuery: q || "" });
 };
 
 // Render new form
@@ -35,22 +49,24 @@ module.exports.createListing = async (req, res) => {
         };
     }
 
-    // 3. GEOCODING: Use the listing's location and wait for response
-    let response = await geocodingClient.forwardGeocode({
-        query: `${listing.location}, ${listing.country}`, // Use listing data for geocoding
-        limit: 1,
-    }).send();
+    // 3. GEOCODING: Use the listing's location (non-fatal if it fails)
+    try {
+        let response = await geocodingClient.forwardGeocode({
+            query: `${listing.location}, ${listing.country}`,
+            limit: 1,
+        }).send();
 
-    // 4. SAVE GEOMETRY DATA
-    listing.geometry = response.body.features[0].geometry;
+        if (response.body.features && response.body.features.length > 0) {
+            listing.geometry = response.body.features[0].geometry;
+        }
+    } catch (geocodeErr) {
+        console.warn("Geocoding failed (map will be unavailable):", geocodeErr.message);
+    }
 
     listing.owner = req.user._id;
-    
-    // 5. SAVE THE LISTING (was using undefined newListing)
-    let savedListing = await listing.save(); 
-    console.log(savedListing);
 
-    // 6. REMOVE premature res.send("done!")
+    let savedListing = await listing.save();
+    console.log(savedListing);
 
     req.flash("success", "New listing created!");
     res.redirect(`/listings/${listing._id}`);

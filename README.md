@@ -35,4 +35,7 @@ Wanderlust is a full-stack web application inspired by Airbnb, where users can e
 - Multer (File Handling)
 - Map / Geocoding APIs
 - Render (Deployment)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 06f7804f1624c6d85414388a58873d2d42c05586
